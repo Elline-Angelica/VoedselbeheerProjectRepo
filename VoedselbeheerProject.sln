@@ -6,8 +6,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Voedselbeheer.Domein", "Voe
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Voedselbeheer.Persistentie", "Voedselbeheer.Persistentie\Voedselbeheer.Persistentie.csproj", "{6EA75D25-DA72-4150-9864-D6FE5D6A3C80}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Voedselbeheer.Db_Initialisatie", "Voedselbeheer.Db_Initialisatie\Voedselbeheer.Db_Initialisatie.csproj", "{23B63F33-584F-4C01-B962-D3B2BC4389C8}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -26,9 +24,5 @@ Global
 		{6EA75D25-DA72-4150-9864-D6FE5D6A3C80}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6EA75D25-DA72-4150-9864-D6FE5D6A3C80}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6EA75D25-DA72-4150-9864-D6FE5D6A3C80}.Release|Any CPU.Build.0 = Release|Any CPU
-		{23B63F33-584F-4C01-B962-D3B2BC4389C8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{23B63F33-584F-4C01-B962-D3B2BC4389C8}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{23B63F33-584F-4C01-B962-D3B2BC4389C8}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{23B63F33-584F-4C01-B962-D3B2BC4389C8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
