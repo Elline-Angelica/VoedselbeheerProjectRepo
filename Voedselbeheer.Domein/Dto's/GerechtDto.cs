@@ -4,6 +4,6 @@ public record GerechtDto
 (
      Guid Id ,
      string Naam ,
-     string FotoUrl 
+     string FotoUrl //wordt soms gewoon 'Foto' genoemd
      //List<VoedselItem> Ingredienten
      );

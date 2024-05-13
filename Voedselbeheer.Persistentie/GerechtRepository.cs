@@ -46,21 +46,126 @@ public class GerechtRepository : IRepository
 
     public IEnumerable<GerechtDto> GetAll()
     {
-        throw new NotImplementedException();
+        List<GerechtDto> gerechten = null;
+            
+        using (SqlConnection connection = new SqlConnection(_connectionString))
+        {
+            string query = @"
+                SELECT *
+                FROM Gerechten";
+
+            SqlCommand command = new SqlCommand(query, connection);
+
+            connection.Open();
+            using (SqlDataReader reader = command.ExecuteReader())
+            {
+
+                GerechtDto gerechtDto;
+
+                //moet er hier een reader.Read() staan
+                gerechtDto = new GerechtDto
+                (
+                    reader.GetGuid(reader.GetOrdinal("id")), 
+                    reader.GetString(reader.GetOrdinal("naam")),
+                    reader.GetString(reader.GetOrdinal("foto"))
+                );
+                
+                gerechten.Add(gerechtDto);
+            }
+        }
+
+        return gerechten;
     }
 
     public void Insert(GerechtDto gerecht)
     {
-        throw new NotImplementedException();
+        using (SqlConnection connection = new SqlConnection(_connectionString))
+        {
+            connection.Open();
+                
+            SqlTransaction transaction = connection.BeginTransaction();
+
+            try
+            {
+                string query = "INSERT INTO Gerechten (Id, Naam, Foto) VALUES (@Id, @Naam, @Foto);";
+
+                using (SqlCommand command = new SqlCommand(query, connection, transaction))
+                {
+                    command.Parameters.AddWithValue("@Id", gerecht.Id);
+                    command.Parameters.AddWithValue("@Naam", gerecht.Naam);
+                    command.Parameters.AddWithValue("@Foto", gerecht.FotoUrl);
+                    command.ExecuteNonQuery();
+                }
+                transaction.Commit();
+            }
+            catch (Exception ex)
+            {
+                transaction.Rollback();
+                Console.WriteLine($"SQL insert failed: {ex.Message}");
+            }
+                
+        }
     }
 
     public void Update(GerechtDto gerecht)
     {
-        throw new NotImplementedException();
+        using (SqlConnection connection = new SqlConnection(_connectionString))
+        {
+            connection.Open();
+            SqlTransaction transaction = connection.BeginTransaction();
+
+            try
+            {
+                string query = @"
+                UPDATE Gerechten 
+                SET 
+                    Naam = @Naam, 
+                    Foto = @Foto
+                WHERE Id = @Id";
+
+                using (SqlCommand command = new SqlCommand(query, connection, transaction))
+                {
+                    command.Parameters.AddWithValue("@Id", gerecht.Id);
+                    command.Parameters.AddWithValue("@Naam", gerecht.Naam);
+                    command.Parameters.AddWithValue("@Foto", gerecht.FotoUrl);
+                    command.ExecuteNonQuery();
+                }
+
+                transaction.Commit();
+            }
+            catch (Exception ex)
+            {
+                transaction.Rollback();
+                Console.WriteLine($"SQL update failed: {ex.Message}");
+            }
+        }
     }
 
     public void Delete(Guid id)
     {
-        throw new NotImplementedException();
+        using (SqlConnection connection = new SqlConnection(_connectionString))
+        {
+            connection.Open();
+
+            SqlTransaction transaction = connection.BeginTransaction();
+
+            try
+            {
+                string query = "DELETE FROM Gerechten WHERE Id = @Id";
+
+                using (SqlCommand command = new SqlCommand(query, connection, transaction))
+                {
+                    command.Parameters.AddWithValue("@Id", id);
+                    command.ExecuteNonQuery();
+                }
+
+                transaction.Commit();
+            }
+            catch (Exception)
+            {
+                transaction.Rollback();
+                throw;
+            }
+        }
     }
 }
