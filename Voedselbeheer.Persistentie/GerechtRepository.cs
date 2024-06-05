@@ -5,7 +5,7 @@ using Microsoft.Data.SqlClient;
 
 namespace Voedselbeheer.Persistentie;
 
-public class GerechtRepository : IRepository
+public class GerechtRepository : IGerechtRepository
 {
     private readonly string _connectionString;
 
@@ -52,7 +52,13 @@ public class GerechtRepository : IRepository
         {
             string query = @"
                 SELECT *
-                FROM Gerechten";
+                FROM Gerechten g
+                JOIN Gerechten_VoedselItems gv
+                ON g.Id = gv.GerechtID
+                JOIN VoedselItem v
+                ON gv.VoedselItemID = v.Id
+                JOIN VoedselGroepen vg
+                ON v.VoedselGroepID = vg.VoedselGroepID";
 
             SqlCommand command = new SqlCommand(query, connection);
 

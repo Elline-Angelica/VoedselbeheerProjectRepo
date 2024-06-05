@@ -6,8 +6,8 @@ public record VoedselItemDto
      string Naam ,
      string FotoUrl ,
      int VoedselgroepId , 
-     int SubVoedselgroepId , 
-     double Hoeveelheid , 
-     DateTime StockDatum , 
-     DateTime ExpiryDate  
+     int SubVoedselgroepId
+     //double Hoeveelheid , 
+     //DateTime StockDatum
+     //DateTime ExpiryDate  
 );
