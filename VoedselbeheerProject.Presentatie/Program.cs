@@ -52,14 +52,20 @@ class Program
         //    }
         //}
 
-        Gerecht g = new Gerecht();
-        g.Naam = "TestInsert";
-        g.FotoUrl = "haha";
-        g.Ingredienten = new Dictionary<VoedselItem, double> { { new VoedselItem { Eenheid = "g", Naam="paprika", VoedselGroep="groente" }, 500 },
-                                                                { new VoedselItem { Eenheid = "ml", Naam="melk", VoedselGroep="zuivel" }, 500 }  };
+        //Gerecht g = new Gerecht();
+        //g.Naam = "TestInsert";
+        //g.FotoUrl = "haha";
+        //g.Ingredienten = new Dictionary<VoedselItem, double> { { new VoedselItem { Eenheid = "g", Naam="paprika", VoedselGroep="groente" }, 500 },
+        //                                                        { new VoedselItem { Eenheid = "ml", Naam="melk", VoedselGroep="zuivel" }, 500 }  };
 
 
-        dc.InsertGerecht(g);
+        //dc.InsertGerecht(g);
+        Gerecht g = dc.GetGerechtById(1);
+        g.Naam = "nieuweTestnaam";
+
+        dc.UpdateGerecht(dc.GetGerechtById(1), g);
+
+        VoedselItem vi = dc.GetVoedselItemByNaam("paprika");
     }
     
 

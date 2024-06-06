@@ -13,8 +13,9 @@ namespace Voedselbeheer.Domein.Interface
         Gerecht GetById(int id);
         List<Gerecht> GetAll();
         void Insert(Gerecht gerecht);
-        void Update(Gerecht gerecht);
+        void Update(Gerecht gerecht, Gerecht nieuwGerecht);
         void Delete(int id);
         Gerecht GetByName(string naam);
+        VoedselItem GetVoedselItemByName(string v);
     }
 }

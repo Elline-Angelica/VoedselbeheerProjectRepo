@@ -17,53 +17,54 @@ public class GerechtRepository : IGerechtRepository
     public Gerecht GetById(int id)
     {
         Gerecht gerecht = null;
-            
-       
-            string query = @"
-                SELECT g.Id, g.Naam, g.Foto, vi.Id as VoedselItemID, vi.Naam as VoedselItemNaam, vi.Foto, vi.VoedselGroep, gv.Hoeveelheid, gv.Eenheid
+
+
+        string query = @"
+                SELECT g.Id, g.Naam, g.Foto, vi.Id as VoedselItemID, vi.Naam as VoedselItemNaam, vi.Foto, vi.VoedselGroep, gv.Hoeveelheid, vi.Eenheid
                 FROM Gerechten g
                 JOIN Gerechten_VoedselItems gv
                 ON g.Id = gv.GerechtID
                 JOIN VoedselItem vi
                 ON vi.Id = gv.VoedselItemID
                 WHERE g.Id = @Id";
-            using (SqlConnection connection = new SqlConnection(_connectionString))
+        using (SqlConnection connection = new SqlConnection(_connectionString))
+        {
+            using (SqlCommand command = new SqlCommand(query, connection))
             {
-                using (SqlCommand command = new SqlCommand(query, connection))
-                {
-                    command.Parameters.AddWithValue("@Id", id);
+                command.Parameters.AddWithValue("@Id", id);
 
-                    connection.Open();
-                    using (SqlDataReader reader = command.ExecuteReader())
+                connection.Open();
+                using (SqlDataReader reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
                     {
-                        while (reader.Read())
+                        if (gerecht == null)
                         {
-                            if (gerecht == null)
-                            {
                             gerecht = new Gerecht {
                                 Id = (int)reader["Id"],
                                 Naam = (string)reader["Naam"],
                                 FotoUrl = reader["Foto"] as string,
-                                Ingredienten = new Dictionary<VoedselItem, double> ()
+                                Ingredienten = new Dictionary<VoedselItem, double>()
                             };
-                            }
-
-                            var voedselItem = new VoedselItem {
-                                Id = (int)reader["VoedselItemID"],
-                                Naam = (string)reader["VoedselItemNaam"],
-                                FotoUrl = "",
-                                VoedselGroep = (string)reader["VoedselGroep"],
-                                Eenheid = (string)reader["Eenheid"]
-                            };
-
-                            double hoeveelheid = (double)reader["Hoeveelheid"];
-                            gerecht.Ingredienten.Add(voedselItem, hoeveelheid);
                         }
+
+                        var voedselItem = new VoedselItem {
+                            Id = (int)reader["VoedselItemID"],
+                            Naam = (string)reader["VoedselItemNaam"],
+                            FotoUrl = "",
+                            VoedselGroep = (string)reader["VoedselGroep"],
+                            Eenheid = (string)reader["Eenheid"]
+                        };
+
+                        double hoeveelheid = (double)reader["Hoeveelheid"];
+                        gerecht.Ingredienten.Add(voedselItem, hoeveelheid);
                     }
                 }
             }
+        }
         return gerecht;
     }
+
 
     public List<Gerecht> GetAll()
     {
@@ -120,77 +121,81 @@ public class GerechtRepository : IGerechtRepository
 
     public void Insert(Gerecht gerecht)
     {
-        string insertGerechtQuery = @"
+        if (GetByName(gerecht.Naam) != null)
+        {
+            string insertGerechtQuery = @"
         INSERT INTO Gerechten (Naam, Foto)
         OUTPUT INSERTED.Id
         VALUES (@Naam, @Foto)";
 
-        string instretVoedselItemQuery = @"
-        INSERT INTO VoedselItem (Naam, Foto, VoedselGroep)
+            string instretVoedselItemQuery = @"
+        INSERT INTO VoedselItem (Naam, Foto, VoedselGroep, Eenheid)
         OUTPUT INSERTED.Id
-        VALUES (@Naam, @Foto, @VoedselGroep)";
+        VALUES (@Naam, @Foto, @VoedselGroep, @Eenheid)";
 
-        string insertGerechtVoedselItemQuery = @"
-        INSERT INTO Gerechten_VoedselItems (GerechtID, VoedselItemID, Hoeveelheid, Eenheid)
-        VALUES (@GerechtID, @VoedselItemID, @Hoeveelheid, @Eenheid)";
+            string insertGerechtVoedselItemQuery = @"
+        INSERT INTO Gerechten_VoedselItems (GerechtID, VoedselItemID, Hoeveelheid)
+        VALUES (@GerechtID, @VoedselItemID, @Hoeveelheid)";
 
-        using (SqlConnection connection = new SqlConnection(_connectionString))
-        {
-            connection.Open();
-
-            using (SqlTransaction transaction = connection.BeginTransaction())
+            using (SqlConnection connection = new SqlConnection(_connectionString))
             {
-                try
+                connection.Open();
+
+                using (SqlTransaction transaction = connection.BeginTransaction())
                 {
-                    int gerechtId;
-                    int voedselItemId;
-
-                    // Insert the Gerecht
-                    using (SqlCommand command = new SqlCommand(insertGerechtQuery, connection, transaction))
+                    try
                     {
-                        command.Parameters.AddWithValue("@Naam", gerecht.Naam);
-                        command.Parameters.AddWithValue("@Foto", (object)gerecht.FotoUrl ?? DBNull.Value);
+                        int gerechtId;
+                        int voedselItemId;
 
-                        gerechtId = (int)command.ExecuteScalar();
-                    }
-
-                    foreach (var item in gerecht.Ingredienten)
-                    {
-
-                        using (SqlCommand command = new SqlCommand(instretVoedselItemQuery, connection, transaction))
+                        // Insert the Gerecht
+                        using (SqlCommand command = new SqlCommand(insertGerechtQuery, connection, transaction))
                         {
-                            command.Parameters.AddWithValue("@Naam", item.Key.Naam);
-                            command.Parameters.AddWithValue("@Foto", "");
-                            command.Parameters.AddWithValue("@VoedselGroep", item.Key.VoedselGroep);
+                            command.Parameters.AddWithValue("@Naam", gerecht.Naam);
+                            command.Parameters.AddWithValue("@Foto", (object)gerecht.FotoUrl ?? DBNull.Value);
 
-                            voedselItemId = (int)command.ExecuteScalar();
-
+                            gerechtId = (int)command.ExecuteScalar();
                         }
 
-                        using (SqlCommand command = new SqlCommand(insertGerechtVoedselItemQuery, connection, transaction))
+                        foreach (var item in gerecht.Ingredienten)
                         {
-                            command.Parameters.AddWithValue("@GerechtID", gerechtId);
-                            command.Parameters.AddWithValue("@VoedselItemID", voedselItemId);
-                            command.Parameters.AddWithValue("@Hoeveelheid", item.Value);
-                            command.Parameters.AddWithValue("@Eenheid", item.Key.Eenheid);
 
-                            command.ExecuteNonQuery();
+                            using (SqlCommand command = new SqlCommand(instretVoedselItemQuery, connection, transaction))
+                            {
+                                command.Parameters.AddWithValue("@Naam", item.Key.Naam);
+                                command.Parameters.AddWithValue("@Foto", "");
+                                command.Parameters.AddWithValue("@VoedselGroep", item.Key.VoedselGroep);
+                                command.Parameters.AddWithValue("@Eenheid", item.Key.Eenheid);
+
+                                voedselItemId = (int)command.ExecuteScalar();
+
+                            }
+
+                            using (SqlCommand command = new SqlCommand(insertGerechtVoedselItemQuery, connection, transaction))
+                            {
+                                command.Parameters.AddWithValue("@GerechtID", gerechtId);
+                                command.Parameters.AddWithValue("@VoedselItemID", voedselItemId);
+                                command.Parameters.AddWithValue("@Hoeveelheid", item.Value);
+
+                                command.ExecuteNonQuery();
+                            }
                         }
-                    }
 
-                    transaction.Commit();
-                }
-                catch
-                {
-                    transaction.Rollback();
-                    throw;
+                        transaction.Commit();
+                    }
+                    catch
+                    {
+                        transaction.Rollback();
+                        throw;
+                    }
                 }
             }
         }
     }
 
-    public void Update(Gerecht gerecht)
+    public void Update(Gerecht oudGerecht, Gerecht nieuwGerecht)
     {
+        
         using (SqlConnection connection = new SqlConnection(_connectionString))
         {
             connection.Open();
@@ -205,12 +210,30 @@ public class GerechtRepository : IGerechtRepository
                     Foto = @Foto
                 WHERE Id = @Id";
 
+                string updateIngredientenQuery = @"
+                UPDATE VoedselItem
+                SET
+                    Naam = @Naam,
+                    Foto = @Foto
+                    VoedselGroep = @VoedselGroep";
+
                 using (SqlCommand command = new SqlCommand(query, connection, transaction))
                 {
-                    command.Parameters.AddWithValue("@Id", gerecht.Id);
-                    command.Parameters.AddWithValue("@Naam", gerecht.Naam);
-                    command.Parameters.AddWithValue("@Foto", gerecht.FotoUrl);
+                    command.Parameters.AddWithValue("@Id", oudGerecht.Id);
+                    command.Parameters.AddWithValue("@Naam", nieuwGerecht.Naam);
+                    command.Parameters.AddWithValue("@Foto", nieuwGerecht.FotoUrl);
                     command.ExecuteNonQuery();
+                }
+
+                foreach(var ingredient in oudGerecht.Ingredienten)
+                {
+                    //DeleteIngredient(ingredient);
+                    //using (SqlCommand command = new SqlCommand(updateIngredientenQuery, connection, transaction))
+                    //{
+                    //    command.Parameters.AddWithValue("@Naam", );
+                    //    command.Parameters.AddWithValue("@Foto", nieuwGerecht.FotoUrl);
+                    //    command.ExecuteNonQuery();
+                    //}
                 }
 
                 transaction.Commit();
@@ -251,6 +274,50 @@ public class GerechtRepository : IGerechtRepository
         }
     }
 
+    public VoedselItem GetVoedselItemByName(string naam)
+    {
+        VoedselItem voedselitem = null;
+        naam = naam.ToLower().Trim();
+
+        string query = @"
+                SELECT Id , Naam, Foto, VoedselGroep, Eenheid
+                FROM VoedselItem 
+                WHERE Naam = @Naam";
+        using (SqlConnection connection = new SqlConnection(_connectionString))
+        {
+            using (SqlCommand command = new SqlCommand(query, connection))
+            {
+                command.Parameters.AddWithValue("@Naam", naam);
+
+                connection.Open();
+                using (SqlDataReader reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        if (voedselitem == null)
+                        {
+                            voedselitem = new VoedselItem {
+                                Id = (int)reader["Id"],
+                                Naam = (string)reader["Naam"],
+                                FotoUrl = reader["Foto"] as string,
+                                Eenheid = reader["Eenheid"] as string,
+                                VoedselGroep = reader["VoedselGroep"] as string
+                            };
+                        }
+
+                        var voedselItem = new VoedselItem {
+                            Id = (int)reader["Id"],
+                            Naam = (string)reader["Naam"],
+                            FotoUrl = "",
+                            VoedselGroep = (string)reader["VoedselGroep"],
+                            Eenheid = (string)reader["Eenheid"]
+                        };                       
+                    }
+                }
+            }
+        }
+        return voedselitem;
+    }
     public Gerecht GetByName(string naam)
     {
         Gerecht gerecht = null;
