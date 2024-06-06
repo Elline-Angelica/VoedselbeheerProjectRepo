@@ -1,0 +1,103 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\izzhe\\gitRepos\\VoedselbeheerProjectRepo\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{60C12A2C-4683-4F5A-875F-6FEDC4431663}|Voedselbeheer.Domein\\Voedselbeheer.Domein.csproj|c:\\users\\izzhe\\gitrepos\\voedselbeheerprojectrepo\\voedselbeheer.domein\\models\\gerecht.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{60C12A2C-4683-4F5A-875F-6FEDC4431663}|Voedselbeheer.Domein\\Voedselbeheer.Domein.csproj|solutionrelative:voedselbeheer.domein\\models\\gerecht.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{60C12A2C-4683-4F5A-875F-6FEDC4431663}|Voedselbeheer.Domein\\Voedselbeheer.Domein.csproj|c:\\users\\izzhe\\gitrepos\\voedselbeheerprojectrepo\\voedselbeheer.domein\\models\\voedselitem.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{60C12A2C-4683-4F5A-875F-6FEDC4431663}|Voedselbeheer.Domein\\Voedselbeheer.Domein.csproj|solutionrelative:voedselbeheer.domein\\models\\voedselitem.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{60C12A2C-4683-4F5A-875F-6FEDC4431663}|Voedselbeheer.Domein\\Voedselbeheer.Domein.csproj|c:\\users\\izzhe\\gitrepos\\voedselbeheerprojectrepo\\voedselbeheer.domein\\models\\voorraaditem.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{60C12A2C-4683-4F5A-875F-6FEDC4431663}|Voedselbeheer.Domein\\Voedselbeheer.Domein.csproj|solutionrelative:voedselbeheer.domein\\models\\voorraaditem.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6EA75D25-DA72-4150-9864-D6FE5D6A3C80}|Voedselbeheer.Persistentie\\Voedselbeheer.Persistentie.csproj|c:\\users\\izzhe\\gitrepos\\voedselbeheerprojectrepo\\voedselbeheer.persistentie\\gerechtrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{6EA75D25-DA72-4150-9864-D6FE5D6A3C80}|Voedselbeheer.Persistentie\\Voedselbeheer.Persistentie.csproj|solutionrelative:voedselbeheer.persistentie\\gerechtrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{E0DC2497-9490-4E63-9D8F-0430AC4B5F52}|VoedselbeheerProject.Presentatie\\VoedselbeheerProject.Presentatie.csproj|c:\\users\\izzhe\\gitrepos\\voedselbeheerprojectrepo\\voedselbeheerproject.presentatie\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{E0DC2497-9490-4E63-9D8F-0430AC4B5F52}|VoedselbeheerProject.Presentatie\\VoedselbeheerProject.Presentatie.csproj|solutionrelative:voedselbeheerproject.presentatie\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 1,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "VoorraadItem.cs",
+              "DocumentMoniker": "C:\\Users\\izzhe\\gitRepos\\VoedselbeheerProjectRepo\\Voedselbeheer.Domein\\Models\\VoorraadItem.cs",
+              "RelativeDocumentMoniker": "Voedselbeheer.Domein\\Models\\VoorraadItem.cs",
+              "ToolTip": "C:\\Users\\izzhe\\gitRepos\\VoedselbeheerProjectRepo\\Voedselbeheer.Domein\\Models\\VoorraadItem.cs",
+              "RelativeToolTip": "Voedselbeheer.Domein\\Models\\VoorraadItem.cs",
+              "ViewState": "AQIAAAMAAAAAAAAAAAAAAAwAAAA2AAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-06-06T08:20:17.441Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "Gerecht.cs",
+              "DocumentMoniker": "C:\\Users\\izzhe\\gitRepos\\VoedselbeheerProjectRepo\\Voedselbeheer.Domein\\Models\\Gerecht.cs",
+              "RelativeDocumentMoniker": "Voedselbeheer.Domein\\Models\\Gerecht.cs",
+              "ToolTip": "C:\\Users\\izzhe\\gitRepos\\VoedselbeheerProjectRepo\\Voedselbeheer.Domein\\Models\\Gerecht.cs",
+              "RelativeToolTip": "Voedselbeheer.Domein\\Models\\Gerecht.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAkAAAABAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-06-06T08:17:46.344Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "VoedselItem.cs",
+              "DocumentMoniker": "C:\\Users\\izzhe\\gitRepos\\VoedselbeheerProjectRepo\\Voedselbeheer.Domein\\Models\\VoedselItem.cs",
+              "RelativeDocumentMoniker": "Voedselbeheer.Domein\\Models\\VoedselItem.cs",
+              "ToolTip": "C:\\Users\\izzhe\\gitRepos\\VoedselbeheerProjectRepo\\Voedselbeheer.Domein\\Models\\VoedselItem.cs",
+              "RelativeToolTip": "Voedselbeheer.Domein\\Models\\VoedselItem.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAsAAABzAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-06-06T08:11:21.845Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "Program.cs",
+              "DocumentMoniker": "C:\\Users\\izzhe\\gitRepos\\VoedselbeheerProjectRepo\\VoedselbeheerProject.Presentatie\\Program.cs",
+              "RelativeDocumentMoniker": "VoedselbeheerProject.Presentatie\\Program.cs",
+              "ToolTip": "C:\\Users\\izzhe\\gitRepos\\VoedselbeheerProjectRepo\\VoedselbeheerProject.Presentatie\\Program.cs",
+              "RelativeToolTip": "VoedselbeheerProject.Presentatie\\Program.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-06-05T09:17:04.692Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "GerechtRepository.cs",
+              "DocumentMoniker": "C:\\Users\\izzhe\\gitRepos\\VoedselbeheerProjectRepo\\Voedselbeheer.Persistentie\\GerechtRepository.cs",
+              "RelativeDocumentMoniker": "Voedselbeheer.Persistentie\\GerechtRepository.cs",
+              "ToolTip": "C:\\Users\\izzhe\\gitRepos\\VoedselbeheerProjectRepo\\Voedselbeheer.Persistentie\\GerechtRepository.cs",
+              "RelativeToolTip": "Voedselbeheer.Persistentie\\GerechtRepository.cs",
+              "ViewState": "AQIAABUAAAAAAAAAAAAYwAkAAAAqAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-06-05T09:15:54.031Z"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
