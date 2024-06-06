@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+<<<<<<< HEAD
 using Voedselbeheer.Domein.Interface;
 
 namespace Voedselbeheer.Domein
@@ -12,5 +13,12 @@ namespace Voedselbeheer.Domein
         private IGerechtRepository _gerechtRepo { get; } = gerechtRepo;
 
 
+=======
+
+namespace Voedselbeheer.Domein
+{
+    internal class DomeinController
+    {
+>>>>>>> branch_iva
     }
 }
