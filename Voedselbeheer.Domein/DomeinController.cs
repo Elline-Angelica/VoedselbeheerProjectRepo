@@ -13,19 +13,24 @@ public class DomeinController(IGerechtRepository gerechtRepo)
 
     public List<Gerecht> GetAlleGerechten()
     {
-        return _gerechtRepo.GetAll();
+        return _gerechtRepo.GetAllGerechten();
+    }
+
+    public List<VoedselItem> GetAllVoedselItems()
+    {
+        return _gerechtRepo.GetAllVoedselItems();
     }
 
     public Gerecht GetGerechtById(int id)
     {
-        Gerecht gerecht = _gerechtRepo.GetById(id);
+        Gerecht gerecht = _gerechtRepo.GetGerechtById(id);
 
         return gerecht;
     }
 
     public Gerecht GetGerechtByNaam(string naam)
     {
-        Gerecht gerecht = _gerechtRepo.GetByName(naam);
+        Gerecht gerecht = _gerechtRepo.GetGerechtByName(naam);
         return gerecht;
     }
 
@@ -36,12 +41,17 @@ public class DomeinController(IGerechtRepository gerechtRepo)
 
     public void InsertGerecht(Gerecht record)
     {
-        _gerechtRepo.Insert(record);
+        _gerechtRepo.InsertGerecht(record);
+    }
+
+    public void InsertVoedselItem(VoedselItem vi)
+    {
+        _gerechtRepo.InsertVoedselItem(vi);
     }
 
     public void UpdateGerecht(Gerecht gerecht, Gerecht nieuwGerecht)
     {
-        _gerechtRepo.Update(gerecht, nieuwGerecht);
+        _gerechtRepo.UpdateGerecht(gerecht, nieuwGerecht);
     }
 }
 

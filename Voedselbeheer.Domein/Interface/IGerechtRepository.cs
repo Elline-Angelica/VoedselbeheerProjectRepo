@@ -10,12 +10,14 @@ namespace Voedselbeheer.Domein.Interface
     public interface IGerechtRepository
     {
         // CRUD operaties
-        Gerecht GetById(int id);
-        List<Gerecht> GetAll();
-        void Insert(Gerecht gerecht);
-        void Update(Gerecht gerecht, Gerecht nieuwGerecht);
+        Gerecht GetGerechtById(int id);
+        List<Gerecht> GetAllGerechten();
+        void InsertGerecht(Gerecht gerecht);
+        void UpdateGerecht(Gerecht gerecht, Gerecht nieuwGerecht);
         void Delete(int id);
-        Gerecht GetByName(string naam);
+        Gerecht GetGerechtByName(string naam);
         VoedselItem GetVoedselItemByName(string v);
+        List<VoedselItem> GetAllVoedselItems();
+        void InsertVoedselItem(VoedselItem vi);
     }
 }

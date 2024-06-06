@@ -14,7 +14,7 @@ public class GerechtRepository : IGerechtRepository
     {
         _connectionString = connectionString;
     }
-    public Gerecht GetById(int id)
+    public Gerecht GetGerechtById(int id)
     {
         Gerecht gerecht = null;
 
@@ -66,7 +66,7 @@ public class GerechtRepository : IGerechtRepository
     }
 
 
-    public List<Gerecht> GetAll()
+    public List<Gerecht> GetAllGerechten()
     {
         List<Gerecht> gerechten = new List<Gerecht>();
 
@@ -119,9 +119,9 @@ public class GerechtRepository : IGerechtRepository
         return gerechten;
     }
 
-    public void Insert(Gerecht gerecht)
+    public void InsertGerecht(Gerecht gerecht)
     {
-        if (GetByName(gerecht.Naam) != null)
+        if (GetGerechtByName(gerecht.Naam) != null)
         {
             string insertGerechtQuery = @"
         INSERT INTO Gerechten (Naam, Foto)
@@ -148,7 +148,7 @@ public class GerechtRepository : IGerechtRepository
                         int gerechtId;
                         int voedselItemId;
 
-                        // Insert the Gerecht
+                        // InsertGerecht the Gerecht
                         using (SqlCommand command = new SqlCommand(insertGerechtQuery, connection, transaction))
                         {
                             command.Parameters.AddWithValue("@Naam", gerecht.Naam);
@@ -159,26 +159,42 @@ public class GerechtRepository : IGerechtRepository
 
                         foreach (var item in gerecht.Ingredienten)
                         {
-
-                            using (SqlCommand command = new SqlCommand(instretVoedselItemQuery, connection, transaction))
+                            VoedselItem vi = GetVoedselItemByName(item.Key.Naam);
+                            if (vi == null)
                             {
-                                command.Parameters.AddWithValue("@Naam", item.Key.Naam);
-                                command.Parameters.AddWithValue("@Foto", "");
-                                command.Parameters.AddWithValue("@VoedselGroep", item.Key.VoedselGroep);
-                                command.Parameters.AddWithValue("@Eenheid", item.Key.Eenheid);
 
-                                voedselItemId = (int)command.ExecuteScalar();
+                                using (SqlCommand command = new SqlCommand(instretVoedselItemQuery, connection, transaction))
+                                {
+                                    command.Parameters.AddWithValue("@Naam", item.Key.Naam);
+                                    command.Parameters.AddWithValue("@Foto", "");
+                                    command.Parameters.AddWithValue("@VoedselGroep", item.Key.VoedselGroep);
+                                    command.Parameters.AddWithValue("@Eenheid", item.Key.Eenheid);
 
+                                    voedselItemId = (int)command.ExecuteScalar();
+
+                                }
+
+                                using (SqlCommand command = new SqlCommand(insertGerechtVoedselItemQuery, connection, transaction))
+                                {
+                                    command.Parameters.AddWithValue("@GerechtID", gerechtId);
+                                    command.Parameters.AddWithValue("@VoedselItemID", voedselItemId);
+                                    command.Parameters.AddWithValue("@Hoeveelheid", item.Value);
+
+                                    command.ExecuteNonQuery();
+                                }
                             }
-
-                            using (SqlCommand command = new SqlCommand(insertGerechtVoedselItemQuery, connection, transaction))
+                            else
                             {
-                                command.Parameters.AddWithValue("@GerechtID", gerechtId);
-                                command.Parameters.AddWithValue("@VoedselItemID", voedselItemId);
-                                command.Parameters.AddWithValue("@Hoeveelheid", item.Value);
+                                using (SqlCommand command = new SqlCommand(insertGerechtVoedselItemQuery, connection, transaction))
+                                {
+                                    command.Parameters.AddWithValue("@GerechtID", gerechtId);
+                                    command.Parameters.AddWithValue("@VoedselItemID", vi.Id);
+                                    command.Parameters.AddWithValue("@Hoeveelheid", item.Value);
 
-                                command.ExecuteNonQuery();
+                                    command.ExecuteNonQuery();
+                                }
                             }
+                            
                         }
 
                         transaction.Commit();
@@ -193,7 +209,7 @@ public class GerechtRepository : IGerechtRepository
         }
     }
 
-    public void Update(Gerecht oudGerecht, Gerecht nieuwGerecht)
+    public void UpdateGerecht(Gerecht oudGerecht, Gerecht nieuwGerecht)
     {
         
         using (SqlConnection connection = new SqlConnection(_connectionString))
@@ -273,6 +289,37 @@ public class GerechtRepository : IGerechtRepository
             }
         }
     }
+    public List<VoedselItem> GetAllVoedselItems()
+    {
+        List<VoedselItem> voedselItems = new List<VoedselItem>();
+
+        string query = @"
+            SELECT Id , Naam, Foto, VoedselGroep, Eenheid
+            FROM VoedselItem";
+
+        using (SqlConnection connection = new SqlConnection(_connectionString))
+        {
+            using (SqlCommand command = new SqlCommand(query, connection))
+            {
+                connection.Open();
+                using (SqlDataReader reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        var voedselitem = new VoedselItem {
+                            Id = (int)reader["Id"],
+                            Naam = (string)reader["Naam"],
+                            FotoUrl = reader["Foto"] as string,
+                            Eenheid = reader["Eenheid"] as string,
+                            VoedselGroep = reader["VoedselGroep"] as string
+                        };
+                        voedselItems.Add(voedselitem);
+                    }
+                }
+            }
+        }
+        return voedselItems;
+    }
 
     public VoedselItem GetVoedselItemByName(string naam)
     {
@@ -318,7 +365,36 @@ public class GerechtRepository : IGerechtRepository
         }
         return voedselitem;
     }
-    public Gerecht GetByName(string naam)
+    public void InsertVoedselItem(VoedselItem voedselItem)
+    {
+        // Controleren of het voedselitem al bestaat
+        VoedselItem existingItem = GetVoedselItemByName(voedselItem.Naam);
+        if (existingItem != null)
+        {
+            // Voedselitem bestaat al, je kunt hier eventueel een exception gooien of een andere actie ondernemen
+            return;
+        }
+
+        // Als het voedselitem niet bestaat, voeg het dan in
+        string insertQuery = @"
+        INSERT INTO VoedselItem (Naam, Foto, VoedselGroep, Eenheid)
+        VALUES (@Naam, @Foto, @VoedselGroep, @Eenheid)";
+
+        using (SqlConnection connection = new SqlConnection(_connectionString))
+        {
+            using (SqlCommand command = new SqlCommand(insertQuery, connection))
+            {
+                command.Parameters.AddWithValue("@Naam", voedselItem.Naam);
+                command.Parameters.AddWithValue("@Foto", (object)voedselItem.FotoUrl ?? DBNull.Value);
+                command.Parameters.AddWithValue("@VoedselGroep", voedselItem.VoedselGroep);
+                command.Parameters.AddWithValue("@Eenheid", voedselItem.Eenheid);
+
+                connection.Open();
+                command.ExecuteNonQuery();
+            }
+        }
+    }
+    public Gerecht GetGerechtByName(string naam)
     {
         Gerecht gerecht = null;
         naam = naam.ToLower().Trim();

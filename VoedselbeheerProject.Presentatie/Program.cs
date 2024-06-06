@@ -60,12 +60,16 @@ class Program
 
 
         //dc.InsertGerecht(g);
-        Gerecht g = dc.GetGerechtById(1);
-        g.Naam = "nieuweTestnaam";
+        //Gerecht g = dc.GetGerechtById(1);
+        //g.Naam = "nieuweTestnaam";
 
-        dc.UpdateGerecht(dc.GetGerechtById(1), g);
+        //dc.UpdateGerecht(dc.GetGerechtById(1), g);
 
-        VoedselItem vi = dc.GetVoedselItemByNaam("paprika");
+        //VoedselItem vi = dc.GetVoedselItemByNaam("paprika");
+        //List<VoedselItem> test = dc.GetAllVoedselItems();
+
+        VoedselItem vi = new VoedselItem() { Eenheid = "bla", Naam = "geenzin", VoedselGroep = "ongezond", FotoUrl = "" };
+        dc.InsertVoedselItem(vi);
     }
     
 
