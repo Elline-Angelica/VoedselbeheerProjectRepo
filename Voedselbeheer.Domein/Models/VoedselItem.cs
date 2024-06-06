@@ -11,4 +11,5 @@ public class VoedselItem
     //public DateTime StockDatum { get; set; } // Datum in voorraad --> zit al op de VoorraadItem
     //public DateTime ExpiryDate { get; set; } // Houdbaarheidsdatum --> moesten enkel met datum in voorraad werken
     public string VoedselGroep { get; set; } // bv gerecht-vlees-vis-groente-fruit-snacks
+    public string Eenheid { get; set; }
 }
