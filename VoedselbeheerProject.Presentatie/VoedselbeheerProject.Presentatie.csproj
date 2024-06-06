@@ -9,6 +9,10 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <PackageReference Include="CsvHelper" Version="32.0.3" />
+    </ItemGroup>
+
+    <ItemGroup>
       <ProjectReference Include="..\Voedselbeheer.Domein\Voedselbeheer.Domein.csproj" />
       <ProjectReference Include="..\Voedselbeheer.Persistentie\Voedselbeheer.Persistentie.csproj" />
     </ItemGroup>

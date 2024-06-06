@@ -3,22 +3,36 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-<<<<<<< HEAD
 using Voedselbeheer.Domein.Interface;
 
-namespace Voedselbeheer.Domein
+namespace Voedselbeheer.Domein;
+
+public class DomeinController(IGerechtRepository gerechtRepo)
 {
-    public class DomeinController(IGerechtRepository gerechtRepo)
+    private IGerechtRepository _gerechtRepo { get; } = gerechtRepo;
+
+    public List<Gerecht> GetAlleGerechten()
     {
-        private IGerechtRepository _gerechtRepo { get; } = gerechtRepo;
+        return _gerechtRepo.GetAll();
+    }
 
-
-=======
-
-namespace Voedselbeheer.Domein
-{
-    internal class DomeinController
+    public Gerecht GetGerechtById(int id)
     {
->>>>>>> branch_iva
+        Gerecht gerecht = _gerechtRepo.GetById(id);
+
+        return gerecht;
+    }
+
+    public Gerecht GetGerechtByNaam(string naam)
+    {
+        Gerecht gerecht = _gerechtRepo.GetByName(naam);
+        return gerecht;
+    }
+
+    public void InsertGerecht(Gerecht record)
+    {
+        _gerechtRepo.Insert(record);
     }
 }
+
+

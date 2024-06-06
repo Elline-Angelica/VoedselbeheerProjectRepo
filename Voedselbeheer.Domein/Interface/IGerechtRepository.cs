@@ -10,10 +10,11 @@ namespace Voedselbeheer.Domein.Interface
     public interface IGerechtRepository
     {
         // CRUD operaties
-        GerechtDto GetById(Guid id);
-        IEnumerable<GerechtDto> GetAll();
-        void Insert(GerechtDto gerecht);
-        void Update(GerechtDto gerecht);
-        void Delete(Guid id);
+        Gerecht GetById(int id);
+        List<Gerecht> GetAll();
+        void Insert(Gerecht gerecht);
+        void Update(Gerecht gerecht);
+        void Delete(int id);
+        Gerecht GetByName(string naam);
     }
 }
