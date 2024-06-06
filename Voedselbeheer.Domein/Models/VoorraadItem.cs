@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Voedselbeheer.Domein.Models
 {
-    internal class VoorraadItem
+    public class VoorraadItem
     {
         public VoedselItem Item { get; set; }
         public double Hoeveelheid { get; set; }

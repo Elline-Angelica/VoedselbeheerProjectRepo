@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Voedselbeheer.Domein.Dto_s;
 using Voedselbeheer.Domein.Interface;
+using Voedselbeheer.Domein.Models;
 
 namespace Voedselbeheer.Domein;
 
@@ -52,6 +54,35 @@ public class DomeinController(IGerechtRepository gerechtRepo)
     public void UpdateGerecht(Gerecht gerecht, Gerecht nieuwGerecht)
     {
         _gerechtRepo.UpdateGerecht(gerecht, nieuwGerecht);
+    }
+    public List<Gerecht> GetGerechtenByIngredienten(List<VoedselItem> ingredienten)
+    {
+        return _gerechtRepo.GetGerechtenByIngredienten(ingredienten);
+    }
+    //logica nog niet in orde
+    public List<Gerecht> GetGerechtenMetIngredientenInVoorraadOuderDan3Maand()
+    {
+        List<VoorraadItem> ouderDan3Maand = GetVoedselItemsOuderDan3Maand();
+        List<Gerecht> gerechten = new();
+        List<VoedselItem> ingredienten = new();
+        foreach(VoorraadItem vi in ouderDan3Maand)
+        {
+            ingredienten.Add(vi.Item);
+            List<Gerecht> gerecht = _gerechtRepo.GetGerechtenByIngredienten(ingredienten);
+        }
+        return new();
+    }
+    public List<VoorraadItem> GetVoedselItemsOuderDan3Maand()
+    {
+        List<VoorraadItem> voorraad = GetVoorraad();
+        DateTime now = DateTime.Now;
+        List<VoorraadItem> ouderDan3Maand = voorraad.Where(v => v.DatumInVoorraad.AddMonths(3) < now).ToList();
+        return ouderDan3Maand;
+    }
+
+    public List<VoorraadItem> GetVoorraad()
+    {
+        return _gerechtRepo.GetAllVoedselItemsInVoorraad();
     }
 }
 

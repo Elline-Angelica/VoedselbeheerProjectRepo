@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Voedselbeheer.Domein.Dto_s;
+using Voedselbeheer.Domein.Models;
 
 namespace Voedselbeheer.Domein.Interface
 {
@@ -19,5 +20,7 @@ namespace Voedselbeheer.Domein.Interface
         VoedselItem GetVoedselItemByName(string v);
         List<VoedselItem> GetAllVoedselItems();
         void InsertVoedselItem(VoedselItem vi);
+        List<VoorraadItem> GetAllVoedselItemsInVoorraad();
+        List<Gerecht> GetGerechtenByIngredienten(List<VoedselItem> ingredienten);
     }
 }

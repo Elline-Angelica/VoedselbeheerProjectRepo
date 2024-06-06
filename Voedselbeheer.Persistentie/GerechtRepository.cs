@@ -2,6 +2,7 @@
 using Voedselbeheer.Domein.Interface;
 using Microsoft.Data.SqlClient;
 using Voedselbeheer.Domein;
+using Voedselbeheer.Domein.Models;
 
 
 namespace Voedselbeheer.Persistentie;
@@ -71,7 +72,7 @@ public class GerechtRepository : IGerechtRepository
         List<Gerecht> gerechten = new List<Gerecht>();
 
         string query = @"
-        SELECT g.Id, g.Naam, g.Foto, vi.Id as VoedselItemID, vi.Naam as VoedselItemNaam, vi.Foto as VoedselItemFoto, vi.VoedselGroep, gv.Hoeveelheid, gv.Eenheid
+        SELECT g.Id, g.Naam, g.Foto, vi.Id as VoedselItemID, vi.Naam as VoedselItemNaam, vi.Foto as VoedselItemFoto, vi.VoedselGroep, gv.Hoeveelheid, vi.Eenheid
         FROM Gerechten g
         JOIN Gerechten_VoedselItems gv ON g.Id = gv.GerechtID
         JOIN VoedselItem vi ON vi.Id = gv.VoedselItemID";
@@ -121,7 +122,7 @@ public class GerechtRepository : IGerechtRepository
 
     public void InsertGerecht(Gerecht gerecht)
     {
-        if (GetGerechtByName(gerecht.Naam) != null)
+        if (GetGerechtByName(gerecht.Naam) == null)
         {
             string insertGerechtQuery = @"
         INSERT INTO Gerechten (Naam, Foto)
@@ -400,7 +401,7 @@ public class GerechtRepository : IGerechtRepository
         naam = naam.ToLower().Trim();
 
         string query = @"
-                SELECT g.Id, g.Naam, g.Foto, vi.Id as VoedselItemID, vi.Naam as VoedselItemNaam, vi.Foto, vi.VoedselGroep, gv.Hoeveelheid, gv.Eenheid
+                SELECT g.Id, g.Naam, g.Foto, vi.Id as VoedselItemID, vi.Naam as VoedselItemNaam, vi.Foto, vi.VoedselGroep, gv.Hoeveelheid, vi.Eenheid
                 FROM Gerechten g
                 JOIN Gerechten_VoedselItems gv
                 ON g.Id = gv.GerechtID
@@ -443,5 +444,172 @@ public class GerechtRepository : IGerechtRepository
             }
         }
         return gerecht;
+    }
+
+    public List<VoorraadItem> GetAllVoedselItemsInVoorraad()
+    {
+        List<VoorraadItem> voorraaditems = new List<VoorraadItem>();
+
+        string query = @"
+            SELECT v.Id , vi.Naam, vi.Foto, vi.VoedselGroep, vi.Eenheid, v.Hoeveelheid, v.DatumInVoorraad
+            FROM Voorraad v
+            JOIN VoedselItem vi
+            ON vi.Id = v.VoedselItemID";
+
+        using (SqlConnection connection = new SqlConnection(_connectionString))
+        {
+            using (SqlCommand command = new SqlCommand(query, connection))
+            {
+                connection.Open();
+                using (SqlDataReader reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        var voedselitem = new VoedselItem {
+                            Id = (int)reader["Id"],
+                            Naam = (string)reader["Naam"],
+                            FotoUrl = reader["Foto"] as string,
+                            Eenheid = reader["Eenheid"] as string,
+                            VoedselGroep = reader["VoedselGroep"] as string
+                        };
+                        var voorraaditem = new VoorraadItem {
+                            DatumInVoorraad = (DateTime)reader["DatumInVoorraad"],
+                            Hoeveelheid = (double)reader["Hoeveelheid"],
+                            Item = voedselitem
+                        };
+                        voorraaditems.Add(voorraaditem);
+                    }
+                }
+            }
+        }
+        return voorraaditems;
+    }
+
+    public List<Gerecht> GetGerechtenByIngredienten(List<VoedselItem> ingredienten)
+    {
+        List<Gerecht> gerechten = new List<Gerecht>();
+
+        // Eerste query om gerechten te vinden die de opgegeven ingrediënten bevatten
+        string initialQuery = @"
+        SELECT DISTINCT g.Id, g.Naam, g.Foto
+        FROM Gerechten g
+        JOIN Gerechten_VoedselItems gv
+        ON g.Id = gv.GerechtID
+        JOIN VoedselItem vi
+        ON vi.Id = gv.VoedselItemID
+        WHERE vi.Naam IN (";
+
+        // Voeg placeholders toe voor de ingrediënten
+        for (int i = 0; i < ingredienten.Count; i++)
+        {
+            initialQuery += $"@Ingredient{i}";
+            if (i < ingredienten.Count - 1)
+            {
+                initialQuery += ", ";
+            }
+        }
+        initialQuery += ")";
+
+        List<int> gerechtIds = new List<int>();
+
+        using (SqlConnection connection = new SqlConnection(_connectionString))
+        {
+            using (SqlCommand command = new SqlCommand(initialQuery, connection))
+            {
+                // Voeg parameterwaarden toe voor de ingrediënten
+                for (int i = 0; i < ingredienten.Count; i++)
+                {
+                    command.Parameters.AddWithValue($"@Ingredient{i}", ingredienten[i].Naam);
+                }
+
+                connection.Open();
+                using (SqlDataReader reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        gerechtIds.Add((int)reader["Id"]);
+                    }
+                }
+            }
+        }
+
+        // Als er geen gerechten zijn gevonden, retourneer een lege lijst
+        if (gerechtIds.Count == 0)
+        {
+            return gerechten;
+        }
+
+        if (gerechtIds.Count == 0)
+        {
+            return gerechten;
+        }
+
+        // Tweede query om alle ingrediënten van de gevonden gerechten op te halen
+        string query = @"
+        SELECT g.Id, g.Naam, g.Foto, vi.Id as VoedselItemID, vi.Naam as VoedselItemNaam, vi.Foto, vi.VoedselGroep, gv.Hoeveelheid, vi.Eenheid
+        FROM Gerechten g
+        JOIN Gerechten_VoedselItems gv
+        ON g.Id = gv.GerechtID
+        JOIN VoedselItem vi
+        ON vi.Id = gv.VoedselItemID
+        WHERE g.Id IN (";
+
+        // Voeg placeholders toe voor de gerechten
+        for (int i = 0; i < gerechtIds.Count; i++)
+        {
+            query += $"@GerechtId{i}";
+            if (i < gerechtIds.Count - 1)
+            {
+                query += ", ";
+            }
+        }
+        query += ")";
+
+        using (SqlConnection connection = new SqlConnection(_connectionString))
+        {
+            using (SqlCommand command = new SqlCommand(query, connection))
+            {
+                // Voeg parameterwaarden toe voor de gerechten
+                for (int i = 0; i < gerechtIds.Count; i++)
+                {
+                    command.Parameters.AddWithValue($"@GerechtId{i}", gerechtIds[i]);
+                }
+
+                connection.Open();
+                using (SqlDataReader reader = command.ExecuteReader())
+                {
+                    Dictionary<int, Gerecht> gerechtDict = new Dictionary<int, Gerecht>();
+
+                    while (reader.Read())
+                    {
+                        int gerechtId = (int)reader["Id"];
+                        if (!gerechtDict.ContainsKey(gerechtId))
+                        {
+                            Gerecht gerecht = new Gerecht {
+                                Id = gerechtId,
+                                Naam = (string)reader["Naam"],
+                                FotoUrl = reader["Foto"] as string,
+                                Ingredienten = new Dictionary<VoedselItem, double>()
+                            };
+                            gerechtDict[gerechtId] = gerecht;
+                        }
+
+                        var voedselItem = new VoedselItem {
+                            Id = (int)reader["VoedselItemID"],
+                            Naam = (string)reader["VoedselItemNaam"],
+                            FotoUrl = reader["Foto"] as string,
+                            VoedselGroep = reader["VoedselGroep"] as string,
+                            Eenheid = reader["Eenheid"] as string
+                        };
+
+                        double hoeveelheid = (double)reader["Hoeveelheid"];
+                        gerechtDict[gerechtId].Ingredienten.Add(voedselItem, hoeveelheid);
+                    }
+
+                    gerechten = gerechtDict.Values.ToList();
+                }
+            }
+        }
+        return gerechten;
     }
 }
