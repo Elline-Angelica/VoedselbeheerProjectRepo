@@ -72,8 +72,10 @@ class Program
         //dc.InsertVoedselItem(vi);
         //var test = dc.GetVoorraad();
         //var test = dc.GetVoedselItemsOuderDan3Maand();
-        List<VoedselItem> ingredienten = dc.GetAllVoedselItems().Where(v => v.Naam == "paprika" || v.Naam.ToLower() == "gehakt").ToList();
-        var test = dc.GetGerechtenByIngredienten(ingredienten);
+        //List<VoedselItem> ingredienten = dc.GetAllVoedselItems().Where(v => v.Naam == "paprika" || v.Naam.ToLower() == "gehakt").ToList();
+        //var test = dc.GetGerechtenByIngredienten(ingredienten);
+
+        var newTest = dc.GetGerechtenMetIngredientenInVoorraadOuderDan3Maand();
     }
     
 

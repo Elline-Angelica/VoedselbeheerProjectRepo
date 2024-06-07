@@ -65,12 +65,21 @@ public class DomeinController(IGerechtRepository gerechtRepo)
         List<VoorraadItem> ouderDan3Maand = GetVoedselItemsOuderDan3Maand();
         List<Gerecht> gerechten = new();
         List<VoedselItem> ingredienten = new();
-        foreach(VoorraadItem vi in ouderDan3Maand)
+        HashSet<int> gebruikteGerechtIds = new HashSet<int>();
+        foreach (VoorraadItem vi in ouderDan3Maand)
         {
-            ingredienten.Add(vi.Item);
-            List<Gerecht> gerecht = _gerechtRepo.GetGerechtenByIngredienten(ingredienten);
+            List<Gerecht> gevondenGerechten = _gerechtRepo.GetGerechtenByIngredienten(new List<VoedselItem> { vi.Item });
+
+            foreach (Gerecht gerecht in gevondenGerechten)
+            {
+                if (!gebruikteGerechtIds.Contains(gerecht.Id))
+                {
+                    gerechten.Add(gerecht);
+                    gebruikteGerechtIds.Add(gerecht.Id);
+                }
+            }
         }
-        return new();
+        return gerechten;
     }
     public List<VoorraadItem> GetVoedselItemsOuderDan3Maand()
     {
